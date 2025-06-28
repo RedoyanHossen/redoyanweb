@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redoyan Hossen - Portfolio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #00a8ff;
+            --secondary-color: #e040fb;
+            --dark-bg: #1a1a2e;
+            --light-text: #f0f0f0;
+            --glass-bg: rgba(255, 255, 255, 0.08);
+        }
+
+        html { scroll-behavior: smooth; }
+        body {
+            margin: 0; padding: 0; font-family: 'Poppins', sans-serif;
+            background: var(--dark-bg); color: var(--light-text);
+            min-height: 100vh; overflow-x: hidden;
+        }
+
+        .background-wrapper {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(45deg, #1a1a2e, #162238, #2a3a5e);
+            z-index: -1;
+        }
+        
+        /* --- Header & Navigation --- */
+        .main-header {
+            position: fixed; top: 0; left: 0; width: 100%;
+            padding: 15px 5%; background: rgba(25, 26, 46, 0.7);
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 1000; box-sizing: border-box;
+        }
+        .navbar {
+            display: flex; justify-content: space-between; align-items: center;
+            width: 100%; max-width: 1200px; margin: 0 auto;
+        }
+        .nav-logo { font-size: 1.5rem; font-weight: 700; color: #fff; text-decoration: none; text-transform: uppercase; letter-spacing: 1px; }
+        .nav-menu { list-style: none; display: flex; gap: 30px; margin: 0; padding: 0; align-items: center; }
+        .nav-link { color: #f0f0f0; text-decoration: none; font-size: 1rem; font-weight: 600; padding: 5px 10px; border-radius: 6px; transition: background 0.3s ease, color 0.3s ease; }
+        .nav-link:hover, .nav-link.active { background: rgba(0, 168, 255, 0.2); color: #fff; }
+
+        /* --- Main Content --- */
+        .main-content { padding: 0 5% 40px; }
+
+        /* --- Hero Section --- */
+        #hero {
+            min-height: 100vh; display: flex; flex-direction: column;
+            justify-content: center; align-items: center; text-align: center; color: #fff;
+        }
+        #hero h1 { font-size: 4rem; margin: 0; font-weight: 700; }
+        #hero h1 span { color: var(--primary-color); }
+        #hero p { font-size: 1.5rem; margin-top: 10px; max-width: 600px; color: rgba(255,255,255,0.8); }
+
+        .content-section {
+            max-width: 1100px; margin: 0 auto 100px auto;
+            background: var(--glass-bg); padding: 50px; border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+            opacity: 0; transform: translateY(30px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+        .content-section.visible { opacity: 1; transform: translateY(0); }
+        .content-section h2 {
+            font-size: 2.8rem; font-weight: 700; color: var(--primary-color);
+            text-align: center; margin-top: 0; margin-bottom: 50px; padding-bottom: 15px; 
+            border-bottom: 3px solid var(--primary-color); display: inline-block;
+        }
+        .section-header { text-align: center; }
+        .content-section p, .content-section li { font-size: 1.1rem; line-height: 1.8; color: rgba(240, 240, 240, 0.9);}
+        
+        /* Projects Section */
+        .project-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
+        .project-card {
+            background: rgba(0,0,0,0.3); border-radius: 15px; overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease; cursor: pointer;
+            display: flex; flex-direction: column;
+        }
+        .project-card:hover { transform: translateY(-10px); box-shadow: 0 10px 25px rgba(0,0,0,0.4); }
+        .project-image-container { width: 100%; height: 220px; background-color: #2a3a5e; }
+        .project-image-container img { width: 100%; height: 100%; object-fit: cover; }
+        .project-info { 
+            padding: 20px; 
+            flex-grow: 1; /* Allows this section to grow and fill space */
+        }
+        .project-info h3 { margin: 0 0 5px 0; color: var(--primary-color); font-size: 1.25rem; }
+        .project-info p {
+            font-size: 0.9rem;
+            line-height: 1.5;
+            color: rgba(240, 240, 240, 0.8);
+            margin: 0;
+        }
+        
+        /* --- Modal (Lightbox) Styles --- */
+        .modal {
+            display: none; position: fixed; z-index: 1001;
+            padding-top: 60px; left: 0; top: 0;
+            width: 100%; height: 100%; overflow: auto;
+            background-color: rgba(0,0,0,0.9);
+        }
+        .modal-content {
+            margin: auto; display: block;
+            width: 80%; max-width: 800px;
+            animation-name: zoom; animation-duration: 0.4s;
+        }
+        @keyframes zoom { from {transform:scale(0)} to {transform:scale(1)} }
+        #caption {
+            margin: auto; display: block; width: 80%;
+            max-width: 700px; text-align: center;
+            color: #ccc; padding: 10px 0; height: 150px;
+            font-size: 1.2rem; font-weight: 600;
+        }
+        .close-modal {
+            position: absolute; top: 15px; right: 35px;
+            color: #f1f1f1; font-size: 40px; font-weight: bold;
+            transition: 0.3s; cursor: pointer;
+        }
+        .close-modal:hover, .close-modal:focus { color: #bbb; text-decoration: none; }
+
+        /* Contact Section */
+        .contact-content { text-align: center; }
+        .social-links {
+            margin-top: 30px;
+            display: flex;
+            justify-content: center;
+            gap: 20px; 
+        }
+        .social-links a {
+            color: #fff;
+            text-decoration: none;
+            display: inline-block;
+            transition: transform 0.3s ease, color 0.3s ease;
+        }
+        .social-links a:hover {
+            transform: translateY(-3px);
+            color: var(--primary-color);
+        }
+        .social-links svg {
+            width: 30px;
+            height: 30px;
+        }
+
+        /* Responsive design */
+        .hamburger { display: none; }
+        @media (max-width: 900px) {
+             #hero h1 { font-size: 3rem; }
+             #hero p { font-size: 1.2rem; }
+        }
+
+        @media (max-width: 768px) {
+            .nav-menu {
+                display: none; flex-direction: column; position: absolute;
+                top: 70px; right: 5%; width: 200px;
+                background: rgba(25, 26, 46, 0.95);
+                backdrop-filter: blur(10px); border-radius: 10px; padding: 20px;
+            }
+            .nav-menu.active { display: flex; }
+            .hamburger {
+                display: flex; flex-direction: column;
+                cursor: pointer; gap: 5px;
+            }
+            .hamburger div { width: 25px; height: 3px; background-color: white; border-radius: 5px; }
+            .content-section { padding: 30px; }
+            .content-section h2 { font-size: 2.2rem; }
+            #hero h1 { font-size: 2.5rem; }
+            .modal-content { width: 95%; }
+        }
+    </style>
+</head>
+<body>
+    <div class="background-wrapper"></div>
+
+    <!-- The Modal/Lightbox -->
+    <div id="projectModal" class="modal">
+        <span class="close-modal">&times;</span>
+        <img class="modal-content" id="modalImage">
+        <div id="caption"></div>
+    </div>
+
+    <div id="portfolio-page">
+        <header class="main-header">
+            <nav class="navbar">
+                <a href="#hero" class="nav-logo">Redoyan H.</a>
+                <ul class="nav-menu" id="nav-menu">
+                    <li><a href="#about" class="nav-link">About</a></li>
+                    <li><a href="#skills" class="nav-link">Skills</a></li>
+                    <li><a href="#projects" class="nav-link">Projects</a></li>
+                    <li><a href="#contact" class="nav-link">Contact</a></li>
+                </ul>
+                <div class="hamburger" id="hamburger-menu"><div></div><div></div><div></div></div>
+            </nav>
+        </header>
+
+        <main class="main-content">
+            <section id="hero">
+                <h1>Hello, I'm <span>Redoyan</span></h1>
+                <p>A Creative Designer & Technologist passionate about building beautiful digital experiences.</p>
+            </section>
+
+            <section id="about" class="content-section">
+                 <div class="section-header"><h2>About Me</h2></div>
+                <p>Hi! I am Redoyan Hossen. Currently, I am pursuing a B.Sc. in Multimedia and Creative Technology at Daffodil International University in Dhaka, Bangladesh. I am a professional Graphic Designer, and Motion Designer with a passion for creating beautiful and functional digital experiences.</p>
+            </section>
+
+            <section id="skills" class="content-section">
+                <div class="section-header"><h2>My Skills</h2></div>
+                <div class="skills-grid">
+                     <div class="skill-item">Graphic Design</div> <div class="skill-item">Motion Graphics</div>
+                     <div class="skill-item">UI & UX Design</div> <div class="skill-item">3D Modeling</div>
+                     <div class="skill-item">Web Design</div> <div class="skill-item">AI Prompt Research</div>
+                     <div class="skill-item">Logo & Branding</div> <div class="skill-item">Typography</div>
+                </div>
+            </section>
+
+            <section id="projects" class="content-section">
+                <div class="section-header"><h2>Projects</h2></div>
+                <div class="project-grid">
+                    <div class="project-card" data-title="Mobile App UI/UX for Bkash" data-img-src="https://mir-s3-cdn-cf.behance.net/projects/original/a6c89c204958143.Y3JvcCwzMDAwLDIzNDYsMCwyNDU.png">
+                        <div class="project-image-container"><img src="https://mir-s3-cdn-cf.behance.net/projects/original/a6c89c204958143.Y3JvcCwzMDAwLDIzNDYsMCwyNDU.png"></div>
+                        <div class="project-info">
+                            <h3>Mobile App UI/UX</h3>
+                            <p>A redesign concept for a popular mobile financial service app, focusing on better user experience.</p>
+                        </div>
+                    </div>
+                    <div class="project-card" data-title="3D Stage Design" data-img-src="https://lh4.googleusercontent.com/nppGJE3cC2dsldiJkvgog3jCEpCo7gQ-ORkYOOW0CzANcTiPjWmxLgiZJOyDJc6Qbpkw5ugxBmSM_tMk_bPxXNvPVP_gC7I1-9bcxtoOKjjJqjRsBfr0Hs_exrCExnotJxs7vZvSg4g2LBh06gf-0Jd-yfQOPEV4zPN2k5UIJbuRwfRoTDbeZA=w1280">
+                        <div class="project-image-container"><img src="https://lh4.googleusercontent.com/nppGJE3cC2dsldiJkvgog3jCEpCo7gQ-ORkYOOW0CzANcTiPjWmxLgiZJOyDJc6Qbpkw5ugxBmSM_tMk_bPxXNvPVP_gC7I1-9bcxtoOKjjJqjRsBfr0Hs_exrCExnotJxs7vZvSg4g2LBh06gf-0Jd-yfQOPEV4zPN2k5UIJbuRwfRoTDbeZA=w1280" alt="3D Stage Design"></div>
+                        <div class="project-info">
+                            <h3>3D Stage Design</h3>
+                            <p>Creative 3D models for event stages, designed for visual impact and functionality.</p>
+                        </div>
+                    </div>
+                    <div class="project-card" data-title="3D Exhibition Stall" data-img-src="https://lh5.googleusercontent.com/X0h3IvQXRIuNj58jGIqzXpPm-5LDwjdR3FEe6AX8cz71neDmiiW334osg-phNKwa7CRKxegp6c25YG7MBV_6MCec4EVywJlja16rfgXgTdfuxgNaXiYZhak8jYAepPRUpnEJYPezouFd_JidQqAGsUlpr46VrAA1J5D3zQARmG9NR5R4JOEe6A=w1280">
+                        <div class="project-image-container"><img src="https://lh5.googleusercontent.com/X0h3IvQXRIuNj58jGIqzXpPm-5LDwjdR3FEe6AX8cz71neDmiiW334osg-phNKwa7CRKxegp6c25YG7MBV_6MCec4EVywJlja16rfgXgTdfuxgNaXiYZhak8jYAepPRUpnEJYPezouFd_JidQqAGsUlpr46VrAA1J5D3zQARmG9NR5R4JOEe6A=w1280" alt="3D Exhibition Stall"></div>
+                        <div class="project-info">
+                            <h3>3D Exhibition Stall</h3>
+                            <p>Visually striking and functional exhibition stall designs for various events.</p>
+                        </div>
+                    </div>
+                    <div class="project-card" data-title="Sports Jersey Design" data-img-src="https://lh5.googleusercontent.com/juyGBTbjgglzSO4wFKNhGYOZ_fSDn2VElII-eLmcnFHCIgPYQee57HxIkvYZMAvrJ3-se-tjuzMsrx4J1NgHYMJL4B73kJdPH0tIQr6xkpf3hUJjwpCXN6CwuMFZbdAT6Bn3W1CluRa18_PAzP4Uk34t1MFi9bGA1FbhYviDc6rlFVSsCaueFg=w1280">
+                        <div class="project-image-container"><img src="https://lh5.googleusercontent.com/juyGBTbjgglzSO4wFKNhGYOZ_fSDn2VElII-eLmcnFHCIgPYQee57HxIkvYZMAvrJ3-se-tjuzMsrx4J1NgHYMJL4B73kJdPH0tIQr6xkpf3hUJjwpCXN6CwuMFZbdAT6Bn3W1CluRa18_PAzP4Uk34t1MFi9bGA1FbhYviDc6rlFVSsCaueFg=w1280" alt="Sports Jersey Design"></div>
+                        <div class="project-info">
+                            <h3>Sports Jersey Design</h3>
+                            <p>Custom and modern apparel designs for sports teams and casual wear.</p>
+                        </div>
+                    </div>
+                     <div class="project-card" data-title="Hoodie Design" data-img-src="https://lh4.googleusercontent.com/rEnnxS_9g1AfHSoqayABA235o3xxVuiA3qf_vvEqLIsrquTYr8QlN_9jSXEyrff9_w1zf1Uo5_2bdGI-nTO4jYSQFjZQQ3rzQu64JV7pKB0KZDDsdnXN88bSOVZc5vgomkqvrmbZZ_CcfwzDfmGKiRZCNXmpFK5XvUPvWW4e7EF4tt41Z5vNzg=w1280">
+                        <div class="project-image-container"><img src="https://lh4.googleusercontent.com/rEnnxS_9g1AfHSoqayABA235o3xxVuiA3qf_vvEqLIsrquTYr8QlN_9jSXEyrff9_w1zf1Uo5_2bdGI-nTO4jYSQFjZQQ3rzQu64JV7pKB0KZDDsdnXN88bSOVZc5vgomkqvrmbZZ_CcfwzDfmGKiRZCNXmpFK5XvUPvWW4e7EF4tt41Z5vNzg=w1280" alt="Hoodie Design"></div>
+                        <div class="project-info">
+                           <h3>Hoodie Design</h3>
+                           <p>Stylish hoodie concepts that combine trend with brand identity.</p>
+                        </div>
+                    </div>
+                     <div class="project-card" data-title="Food & Beverage Menu" data-img-src="https://lh6.googleusercontent.com/9QhFtP4XDRRcgwUvuzPv1h1A46wzEIEzyGNzoXKyAnVMMGXpJzrvoCN3WZncbtSTjEDwSUJh8FR95G7UMWGEqv22OKSba5SuW17EmcUXUa9XnjgqfaCuAO_pKwDf7WX3xU-BQQhnnVdGKo9L2jNR8AXOvrzOf6NSWwOhnlExmYZaOSks1fAnOg=w1280">
+                        <div class="project-image-container"><img src="https://lh6.googleusercontent.com/9QhFtP4XDRRcgwUvuzPv1h1A46wzEIEzyGNzoXKyAnVMMGXpJzrvoCN3WZncbtSTjEDwSUJh8FR95G7UMWGEqv22OKSba5SuW17EmcUXUa9XnjgqfaCuAO_pKwDf7WX3xU-BQQhnnVdGKo9L2jNR8AXOvrzOf6NSWwOhnlExmYZaOSks1fAnOg=w1280" alt="Food Menu Design"></div>
+                        <div class="project-info">
+                            <h3>F&B Menu Design</h3>
+                            <p>Elegantly designed menus focusing on readability and brand aesthetics.</p>
+                        </div>
+                    </div>
+                     <div class="project-card" data-title="Poster Design" data-img-src="https://lh4.googleusercontent.com/hyxjp3TYbcGC8OibxQW1jw48LZPDaQCa_pXzGbZ_GBsirOqYdfRke417MYRJ7UDDbQLPRmikwnhcJFItfnDV3xbKXmlDO04EULjjBWwusHCbBVMZPywCoz6XY_-3HUTf8qPf4S1j0f4n-1fM5MKOZDDHRALyNW0TXD1B1Kwob-gwkbmhOgz_Rw=w1280">
+                        <div class="project-image-container"><img src="https.googleusercontent.com/hyxjp3TYbcGC8OibxQW1jw48LZPDaQCa_pXzGbZ_GBsirOqYdfRke417MYRJ7UDDbQLPRmikwnhcJFItfnDV3xbKXmlDO04EULjjBWwusHCbBVMZPywCoz6XY_-3HUTf8qPf4S1j0f4n-1fM5MKOZDDHRALyNW0TXD1B1Kwob-gwkbmhOgz_Rw=w1280" alt="Poster Design"></div>
+                        <div class="project-info">
+                            <h3>Promotional Poster</h3>
+                            <p>Professional posters for events, designed to attract and inform.</p>
+                        </div>
+                    </div>
+                    <div class="project-card" data-title="X-Banner Design" data-img-src="https://lh6.googleusercontent.com/UXLPkSzQmrNh8y-PNLXXUzUtPBCpaOvcLIRuXfs4T_MijIdbAxWeAe6ra9UAVG7vBTQxYCptqdZv33XOcRiHrzdZjwv2Deneuhqe67ZxDHDe_Y_Jh4Tu66oGhdpEv5TZ_8CY967HwQ6eXE91tEzboKoargZErZGOdwSATuF26P-2oxNAxswDSw=w1280">
+                        <div class="project-image-container"><img src="https://lh6.googleusercontent.com/UXLPkSzQmrNh8y-PNLXXUzUtPBCpaOvcLIRuXfs4T_MijIdbAxWeAe6ra9UAVG7vBTQxYCptqdZv33XOcRiHrzdZjwv2Deneuhqe67ZxDHDe_Y_Jh4Tu66oGhdpEv5TZ_8CY967HwQ6eXE91tEzboKoargZErZGOdwSATuF26P-2oxNAxswDSw=w1280" alt="X-Banner Design"></div>
+                        <div class="project-info">
+                            <h3>X-Banner Design</h3>
+                            <p>Eye-catching stand banners for marketing and promotional events.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="contact" class="content-section">
+                <div class="section-header"><h2>Contact Me</h2></div>
+                <div class="contact-content">
+                    <p>Apnar jodi kono proshno thake ba amar sathe kaaj korte agrohi hon, tahole nicher email e jogajog korte paren, othoba social media te connect hote paren.</p>
+                    <p><a href="mailto:redoyan.rh@gmail.com" style="color: var(--primary-color); font-weight: 600; font-size: 1.2rem;">redoyan.rh@gmail.com</a></p>
+                    <div class="social-links">
+                        <a href="https://www.linkedin.com/in/redoyan-hossen19" target="_blank" title="LinkedIn">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M20.5 2h-17A1.5 1.5 0 0 0 2 3.5v17A1.5 1.5 0 0 0 3.5 22h17a1.5 1.5 0 0 0 1.5-1.5v-17A1.5 1.5 0 0 0 20.5 2ZM8 19H5v-9h3zM6.5 8.25A1.75 1.75 0 1 1 8.25 6.5 1.75 1.75 0 0 1 6.5 8.25ZM19 19h-3v-4.75c0-1.4-.5-2.5-1.8-2.5-1 0-1.5.6-1.7 1.2-.1.2-.1.5-.1.8V19h-3v-9h3v1.3c.4-.7 1.2-1.3 2.7-1.3 2 0 3.4 1.3 3.4 4.2V19Z"/></svg>
+                        </a>
+                        <a href="https://www.behance.net/redoyanhossen" target="_blank" title="Behance">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M20.5,2H3.5A1.5,1.5,0,0,0,2,3.5v17A1.5,1.5,0,0,0,3.5,22h17A1.5,1.5,0,0,0,22,20.5v-17A1.5,1.5,0,0,0,20.5,2z M9.5,16.5H6.5V8h3V16.5z M8,7.5A1.5,1.5,0,1,1,6.5,6,1.5,1.5,0,0,1,8,7.5z M17.5,16.5h-4V14h4v-1.5h-4V11h4V9.5h-5.5v7h5.5V16.5z M15.5,8.5h-2.5v1h2.5V8.5z"/></svg>
+                        </a>
+                        <a href="https://twitter.com/redoyan_hossen" target="_blank" title="Twitter">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M22.205 6.012a8.23 8.23 0 0 1-2.356.648 4.128 4.128 0 0 0 1.804-2.272c-.792.47-1.67.812-2.604 1a4.123 4.123 0 0 0-7.04 3.754A11.71 11.71 0 0 1 3.42 5.49a4.127 4.127 0 0 0 1.275 5.506 4.095 4.095 0 0 1-1.868-.515v.052c0 2.152 1.53 3.946 3.552 4.352a4.12 4.12 0 0 1-1.86.07 4.127 4.127 0 0 0 3.852 2.862 8.28 8.28 0 0 1-5.11 1.765A8.35 8.35 0 0 1 2 18.254a11.66 11.66 0 0 0 6.32 1.844c7.58 0 11.72-6.284 11.72-11.72l-.008-.534a8.39 8.39 0 0 0 2.08-2.17Z"/></svg>
+                        </a>
+                        <a href="mailto:redoyan.rh@gmail.com" title="Email">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M22,5H2C1.4,5,1,5.4,1,6v12c0,0.6,0.4,1,1,1h20c0.6,0,1-0.4,1-1V6C23,5.4,22.6,5,22,5z M21,7l-8.5,5.1c-0.3,0.2-0.7,0.2-1,0 L3,7H21z"/></svg>
+                        </a>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // --- Mobile Menu ---
+        const hamburger = document.getElementById('hamburger-menu');
+        const navMenu = document.getElementById('nav-menu');
+        hamburger.addEventListener('click', () => navMenu.classList.toggle('active'));
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', () => {
+                if (navMenu.classList.contains('active')) {
+                    navMenu.classList.remove('active');
+                }
+            });
+        });
+
+        // --- Scroll Animations ---
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) entry.target.classList.add('visible');
+            });
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.content-section').forEach(section => observer.observe(section));
+
+        // --- Modal/Lightbox Logic ---
+        const modal = document.getElementById("projectModal");
+        const modalImg = document.getElementById("modalImage");
+        const captionText = document.getElementById("caption");
+        const projectCards = document.querySelectorAll(".project-card");
+
+        projectCards.forEach(card => {
+            card.onclick = function() {
+                modal.style.display = "block";
+                modalImg.src = this.dataset.imgSrc;
+                captionText.innerHTML = this.dataset.title;
+            }
+        });
+        
+        const closeModal = document.getElementsByClassName("close-modal")[0];
+        closeModal.onclick = function() {
+            modal.style.display = "none";
+        }
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+    </script>
+</body>
+</html>
